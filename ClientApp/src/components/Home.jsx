@@ -17,16 +17,12 @@ export class Home extends Component {
     };
   }
 
-  onSubmit(e) {
-    e.preventDefault();
-    var title = this.title;
-    
+  processResult() {
     var timeToOneUnitOfWork = 0;
     for (var i = 1; i <= this.state.crewSize; i++) {
       timeToOneUnitOfWork += 1 / this.state["crew" + i];  
     }
 
-    console.log(timeToOneUnitOfWork);
     var totalTime = this.state.totalImages / timeToOneUnitOfWork;
     this.setState({
       "result" : totalTime
@@ -36,7 +32,9 @@ export class Home extends Component {
   handleChange = (e) => {
     this.setState({
       [e.target.name]: e.target.value
-    })
+    }, function() {
+      this.processResult();
+    });
   }
 
   renderCrewDetails() {
@@ -44,7 +42,7 @@ export class Home extends Component {
     for (var i = 1; i <= this.state.crewSize; i++) {
       rows.push(
         <Form.Group as={Col} controlId={"formGridCrew" + i} key={i}>
-          <Form.Label>In how much time the crew person #1 completes one image</Form.Label>
+          <Form.Label>In how much time the crew person #{i} completes one image</Form.Label>
           <Form.Control type="number" name={"crew" + i} placeholder="Completion Time" onChange={e => this.handleChange(e)} />
         </Form.Group>
       );
@@ -55,8 +53,15 @@ export class Home extends Component {
 
   render() {
     return (
-      <div>
-        <Form onSubmit={this.onSubmit}>
+      <React.Fragment>
+        <Alert variant="success">
+          <Alert.Heading>Here is the result</Alert.Heading>
+          <p>
+            {this.state.totalImages} images would take {this.state.result} minutes to complete
+          </p>
+        </Alert>
+
+        <Form>
           <Form.Group controlId="formGroupImages">
             <Form.Label>Total Images to be processed</Form.Label>
             <Form.Control type="number" name="totalImages" placeholder="Please enter total images" onChange={e => this.handleChange(e)} />
@@ -66,20 +71,13 @@ export class Home extends Component {
             <Form.Control type="number" name="crewSize" placeholder="Please enter crew size" onChange={e => this.handleChange(e)} />
           </Form.Group>
           {this.renderCrewDetails()}
-          <Button variant="primary" type="submit">
-            Submit
-          </Button>
+          
         </Form>
 
         <br />
 
-        <Alert variant="success">
-          <Alert.Heading>Here is the result</Alert.Heading>
-          <p>
-            {this.state.totalImages} images would take {this.state.result} minutes to complete
-          </p>
-        </Alert>
-      </div>
+        
+      </React.Fragment>
     );
   }
 }
