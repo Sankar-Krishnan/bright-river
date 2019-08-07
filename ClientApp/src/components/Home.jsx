@@ -69,12 +69,11 @@ export class Home extends Component {
             <Form.Label>Crew Size</Form.Label>
             <Form.Control type="number" name="crewSize" placeholder="Please enter crew size" onChange={e => this.handleChange(e)} />
           </Form.Group>
+
           {this.renderCrewDetails()}
-          
         </Form>
 
         <br />
-
         
       </React.Fragment>
     );
